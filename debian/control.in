@@ -1,0 +1,14 @@
+Source: ##PROJECT##
+Section: devel
+Priority: extra
+Maintainer: Rajat Pandit <rp@rajatpandit.com>
+Build-Depends: debhelper (>= 7.0.50~)
+Standards-Version: 3.8.4
+Homepage: http://##PROJECT##
+Vcs-Git: git@example-project.unfuddle.com:example/example.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/example.git;a=summary
+
+Package: ##PROJECT##
+Architecture: all 
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Main website code 

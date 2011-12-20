@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+chown ubuntu:ubuntu -R /var/readysites
+echo "Install finished"
+echo "==================================================="

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="example" basedir="." default="main" description="example.com - Main Website">
+  <!-- some default properties -->
+  <property name="build.env" value="prod"/>
+  <property name="build.base" value="./"/>
+  <property name="debuild" value="/usr/bin/debuild"/>
+  <property name="dpkg-scanpackages" value="/usr/bin/dpkg-scanpackages" />
+  <property name="build.project" value=""/>
+  <property name="packages.path" value="/opt/example/repo/site-code"/>
+  <exec command="dpkg --print-architecture" outputProperty="dpkg.architecture"/>
+
+  <target name="rebuild-packages">
+    <exec dir="${packages.path}/../" command="${dpkg-scanpackages} site-code /dev/null | gzip -9c  > ${packages.path}/Packages.gz" />
+  </target>
+
+  <target name="main" depends="cleanup">
+    <if>
+      <equals arg1="${build.project}" arg2=""/>
+      <then>
+        <echo message="argument build.project needs to be passed"/>
+      </then>
+      <else>
+        <echo message="Building package for environment ${build.env}"/>
+        <echo message="${build.version}" file="${build.base}/version" />
+        <!-- create a new change log for the version -->
+        <copy overwrite="true" file="${build.base}/debian/changelog.in" tofile="${build.base}/debian/changelog">
+          <filterchain>
+            <replacetokens begintoken="##" endtoken="##">
+              <token key="PROJECT" value="${build.project}"/>
+              <token key="VERSION" value="${build.version}"/>
+            </replacetokens>
+          </filterchain>
+        </copy>
+        <!-- create the install file -->
+        <copy overwrite="true" file="${build.base}/debian/install.in" tofile="${build.base}/debian/install">
+          <filterchain>
+            <replacetokens begintoken="##" endtoken="##">
+              <token key="PROJECT" value="${build.project}"/>
+            </replacetokens>
+          </filterchain>
+        </copy>
+        <!-- create the control file -->
+        <copy overwrite="true" file="${build.base}/debian/control.in" tofile="${build.base}/debian/control">
+          <filterchain>
+            <replacetokens begintoken="##" endtoken="##">
+              <token key="PROJECT" value="${build.project}"/>
+            </replacetokens>
+          </filterchain>
+        </copy>
+        <exec command="${debuild} -us -uc" logoutput="true" dir="${build.base}"/>
+        <move file="../${build.project}_${build.version}_all.deb" tofile="${packages.path}/${build.project}_${build.version}_all.deb" overwrite="true" />
+        <delete file="../${build.project}_${build.version}.dsc" />
+        <delete file="../${build.project}_${build.version}_${dpkg.architecture}.build" />
+        <delete file="../${build.project}_${build.version}_${dpkg.architecture}.changes" />
+        <delete file="../${build.project}_${build.version}.tar.gz" />
+        <phingcall target="rebuild-packages" />
+      </else>
+    </if>
+  </target>
+  
+  <target name="cleanup">
+    <if>
+      <equals arg1="${build.project}" arg2=""/>
+      <then>
+        <echo message="argument build.project needs to be passed"/>
+      </then>
+      <else>
+        <echo message="Cleaning up the build directory"/>
+        <delete file="${build.base}/debian/control" verbose="true" />
+        <delete file="${build.base}/debian/changelog" verbose="true" />
+        <delete file="${build.base}/debian/install" verbose="true" />
+        <delete file="${build.base}/debian/${build.project}.substvars" verbose="true"/>
+        <delete file="${build.base}/debian/${build.project}.debhelper.log" verbose="true"/>
+        <delete dir="${build.base}/debian/${build.project}" includeemptydirs="true" failonerror="true"/>
+      </else>
+    </if>
+  </target>
+</project>

@@ -1,0 +1,10 @@
+application /var/readysites/##PROJECT##
+html /var/readysites/##PROJECT##
+includes /var/readysites/##PROJECT##
+scripts /var/readysites/##PROJECT##
+system /var/readysites/##PROJECT##
+version /var/readysites/##PROJECT##
+serverconfig/etc/apache2/sites-available/##PROJECT## /etc/apache2/sites-available
+serverconfig/etc/apache2/site-includes/##PROJECT## /etc/apache2/site-includes
+serverconfig/etc/apache2/ssl-certs/##PROJECT##.crt /etc/apache2/ssl-certs
+serverconfig/etc/apache2/ssl-certs/##PROJECT##.key /etc/apache2/ssl-certs
