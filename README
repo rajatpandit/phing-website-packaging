@@ -1,0 +1,3 @@
+Sample Phing Script that takes arguments build.project and build.version and uses the debian packaging configuration files and make a .deb file out of it. You can find the detailed instructions at http://blog.rajatpandit.com/2011/12/20/automation-for-packaging-websites and the background of why its a good thing to do at http://blog.rajatpandit.com/2011/12/19/packaging-up-websites-for-easy-deployment/.
+
+Any questions/comments should be done on the blog so that they might be useful to other users as well who might be interested in this script/idea.
